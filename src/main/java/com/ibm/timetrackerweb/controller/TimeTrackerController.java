@@ -63,6 +63,10 @@ public class TimeTrackerController {
 	public Map<String,String> addItem(@RequestBody ComputerConfig item) {
 		String currentDate = DateUtil.getFormattedDate("dd-MMM-yyyy");
 		String currentTime = DateUtil.getFormattedDate("HH:mm");
+		if(!registeredComputerName(item.getComputerName()))
+		{
+			return Collections.singletonMap("result", "Computer name " + item.getComputerName() + " not registered");
+		}
 		List<ComputerConfig>list = repo.findByComputerNameAndDateOfData(item.getComputerName(), item.getDateOfData());
 		//List<ComputerConfig>list = repo.findByComputerNameAndCurrentDate(item.getComputerName(), currentDate);
 		ComputerConfig toBeSaved = null;
@@ -95,6 +99,11 @@ public class TimeTrackerController {
 		
 		ComputerConfig savedData = repo.saveAndFlush(toBeSaved);
 		return Collections.singletonMap("result", "success");
+	}
+
+	private boolean registeredComputerName(String computerName) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
