@@ -165,3 +165,23 @@ body, .form-control{
 .custom-width {
     width: 80px !important;
 }
+
+table .collapse.in {
+	display:table-row;
+}
+.hiddenRow {
+    padding: 0 !important;
+}
+.inline {
+    display:inline-block;
+}
+
+tbody tr.info td:hover {
+  background-color: #266080;
+  color: #fff;
+  -webkit-transition-duration: 500ms;
+  -moz-transition-duration: 500ms;
+  -o-transition-duration: 500ms;
+  transition-duration: 500ms;
+  cursor: pointer;
+}

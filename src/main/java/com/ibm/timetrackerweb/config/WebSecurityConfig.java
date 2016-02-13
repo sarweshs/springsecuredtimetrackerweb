@@ -30,6 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	  http.csrf().disable().authorizeRequests()
 		.antMatchers("/hello").access("hasRole('ROLE_ADMIN')")
+		.antMatchers("/").authenticated()
+		.antMatchers("/list").authenticated()
 		.regexMatchers(HttpMethod.POST,"/timetracker/save.*").access("hasRole('ROLE_ADMIN')")
 		.regexMatchers(HttpMethod.GET,"/timetracker/find*.*").access("hasRole('ROLE_ADMIN')")
 		//.regexMatchers(HttpMethod.POST,"/timetracker/save.*").authenticated()
