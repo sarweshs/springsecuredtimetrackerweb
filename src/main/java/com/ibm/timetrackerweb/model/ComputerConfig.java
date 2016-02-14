@@ -18,28 +18,28 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-public class ComputerConfig implements Serializable{
-	
+public class ComputerConfig implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="computer_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "computer_id")
 	private Integer computerId;
-	
+
 	@Column
 	private String computerName;
-	
+
 	@Column
 	@JsonProperty("currentDate")
 	private String dateOfData;
-	
-	@OneToMany(targetEntity=MacAndIp.class, mappedBy="parent", fetch=FetchType.EAGER, cascade= CascadeType.ALL)
-	private List<MacAndIp>listMacs;
-	
+
+	@OneToMany(targetEntity = MacAndIp.class, mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<MacAndIp> listMacs;
+
 	public Integer getComputerId() {
 		return computerId;
 	}
@@ -57,18 +57,15 @@ public class ComputerConfig implements Serializable{
 	}
 
 	public List<MacAndIp> getListMacs() {
-		if(listMacs == null)
-		{
+		if (listMacs == null) {
 			listMacs = new ArrayList<>();
 		}
 		return listMacs;
 	}
-	
-	public void addMacAddress(MacAndIp mac, boolean writeToJson)
-	{
+
+	public void addMacAddress(MacAndIp mac, boolean writeToJson) {
 		getListMacs().add(mac);
-		if(writeToJson)
-		{
+		if (writeToJson) {
 			System.out.println("Added Mac");
 		}
 	}
@@ -80,10 +77,8 @@ public class ComputerConfig implements Serializable{
 
 	public MacAndIp findMacWithIp(String macStr, String ipStr) {
 		// TODO Auto-generated method stub
-		for(MacAndIp mac:getListMacs())
-		{
-			if(mac.getMacAddress().equals(macStr) && mac.getIpAddress().equals(ipStr))
-			{
+		for (MacAndIp mac : getListMacs()) {
+			if (mac.getMacAddress().equals(macStr) && mac.getIpAddress().equals(ipStr)) {
 				return mac;
 			}
 		}
@@ -92,11 +87,10 @@ public class ComputerConfig implements Serializable{
 
 	public String getTotalTime() {
 		double totalTime = 0;
-		String startTimeForDay = getStartTime();
-		String endTimeForDay = getLastEndTimeForDay();
-		
-		if(endTimeForDay == null || startTimeForDay == null)
-		{
+		String startTimeForDay = getEarliestStartTime();
+		String endTimeForDay = getLatestEndTime();
+
+		if (endTimeForDay == null || startTimeForDay == null) {
 			return "0";
 		}
 		Calendar cal = Calendar.getInstance();
@@ -104,44 +98,52 @@ public class ComputerConfig implements Serializable{
 		cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(endTime[0]));
 		cal.set(Calendar.MINUTE, Integer.parseInt(endTime[1]));
 		long end = cal.getTimeInMillis();
-		
+
 		String[] startTime = startTimeForDay.split(":");
 		cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(startTime[0]));
 		cal.set(Calendar.MINUTE, Integer.parseInt(startTime[1]));
 		long start = cal.getTimeInMillis();
-		
+
 		long diff = end - start;
 		long hours = TimeUnit.MILLISECONDS.toHours(diff);
 		long minutes = TimeUnit.MILLISECONDS.toMinutes(diff - (hours * 60 * 60 * 1000));
-		double minuteD = (double)minutes/60;
-		
-		//return DecimalFormatUtil.getFormattedData(totalTime);
+		double minuteD = (double) minutes / 60;
+
+		// return DecimalFormatUtil.getFormattedData(totalTime);
 		return hours + " hours " + minutes + " minutes";
 	}
 
-	private String getLastEndTimeForDay() {
+	public String getLatestEndTime() {
 		// TODO Auto-generated method stub
-		if(getListMacs().size()>0)
-		{
+		if (getListMacs().size() > 0) {
 			String endTime = "00:00";
-			for(MacAndIp mac:getListMacs())
-			{
+			for (MacAndIp mac : getListMacs()) {
 				String ipEndTime = mac.getEndTime();
-				if(ipEndTime.compareTo(endTime)>0)
-				{
+				if (ipEndTime.compareTo(endTime) > 0) {
 					endTime = ipEndTime;
 				}
-			}//end for
+			} // end for
 			return endTime;
 		}
 		return null;
 	}
 
-	private String getStartTime() {
+	public String getEarliestStartTime() {
 		// TODO Auto-generated method stub
-		if(getListMacs().size()>0)
-		{
-			return getListMacs().get(0).getStartTime();
+		/*
+		 * if(getListMacs().size()>0) { return
+		 * getListMacs().get(0).getStartTime(); } return null;
+		 */
+		// TODO Auto-generated method stub
+		if (getListMacs().size() > 0) {
+			String startTime = "23:59";
+			for (MacAndIp mac : getListMacs()) {
+				String ipStartTime = mac.getStartTime();
+				if (ipStartTime.compareTo(startTime) <= 0) {
+					startTime = ipStartTime;
+				}
+			} // end for
+			return startTime;
 		}
 		return null;
 	}
@@ -153,5 +155,5 @@ public class ComputerConfig implements Serializable{
 	public void setDateOfData(String dateOfData) {
 		this.dateOfData = dateOfData;
 	}
-	
+
 }

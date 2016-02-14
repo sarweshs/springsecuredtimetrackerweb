@@ -30,17 +30,24 @@
 	<div class="container">
 		<form:form role="form" action="/" modelAttribute="computerConfig"
 			method="get">
-			<div class="control-group inline">
-				<label for="email">User Name</label> <input type="text"
-					class="form-control" id="computerName" name="computerName">
-				<%-- <form:input path="computerName"/> --%>
-			</div>
-			<div class="control-group inline">
-				<label for="Date Of Data">Date:</label> <input type="text"
-					class="form-control" id="dateOfData" name="dateOfData">
-			</div>
-			<div class="control-group inline">
-				<button type="submit" class="btn btn-default">Submit</button>
+			<div class="row">
+					<div class="col-sm-2">
+						<label for="email">User Name</label> 
+					</div>
+					<div class="col-sm-2">
+						<input type="text" class="form-control" id="computerName" name="computerName">
+					</div>
+					<%-- <form:input path="computerName"/> --%>
+					<div class="col-sm-2">
+						<label for="Date Of Data">Date:</label> 
+					</div>
+					<div class="col-sm-2">	
+						<input type="text"
+							class="form-control" id="dateOfData" name="dateOfData">
+					</div>
+					<div class="col-sm-2">
+						<button type="submit" class="btn btn-default">Search</button>
+					</div>
 			</div>
 		</form:form>
 		<div class="panel panel-default">
@@ -50,23 +57,33 @@
 			</div>
 			
 			<div class="table">
-				<div class="row-fluid">
+				<div class="row-fluid" style="background-color:grey;">
 					<div class="span1">#</div>
-					<div class="span3">User Name</div>
-					<div class="span3">Date Of Data</div>
+					<div class="span1">User Name</div>
+					<div class="span1">Date Of Data</div>
+					<div class="span2">Earliest Start Time</div>
+					<div class="span2">Latest End Time</div>
 					<div class="span3">Hours</div>
 				</div>
 				<c:forEach items="${users}" var="user" varStatus="loop">
-					<div class="row-fluid accordion-toggle" data-toggle="collapse"
-						data-target="#collapse${loop.index + 1}">
+				<c:set var="odd" value="lavender"/>
+				<c:set var="even" value="lavenderblush"/>
+				<c:set var="rowcol" value="${even}"/>
+				<c:if test="${(loop.index + 1)%2 != 0}">
+					<c:set var="rowcol" value="${odd}"/>
+				</c:if>
+				<div class="row-fluid accordion-toggle" data-toggle="collapse"
+						data-target="#collapse${loop.index + 1}" style="background-color:${rowcol};">
 						<div class="span1">${loop.index + 1}</div>
-						<div class="span3">${user.computerName}</div>
-						<div class="span3">${user.dateOfData}</div>
+						<div class="span1">${user.computerName}</div>
+						<div class="span1">${user.dateOfData}</div>
+						<div class="span2">${user.earliestStartTime}</div>
+						<div class="span2">${user.latestEndTime}</div>
 						<div class="span3">${user.totalTime}</div>
 					</div>
-					<div id="collapse${loop.index + 1}" class="row-fluid collapse in">
+					<div id="collapse${loop.index + 1}" class="row-fluid collapse">
 					<div class="table">
-						<div class="row-fluid">
+						<div class="row-fluid" style="background-color:blue;">
 							<div class="span2">#</div>
 							<div class="span2">MAC Address</div>
 							<div class="span2">IP Address</div>
@@ -74,7 +91,7 @@
 							<div class="span2">End Time</div>
 						</div>
 						<c:forEach items="${user.listMacs}" var="mac" varStatus="loopmac">
-							<div class="row-fluid">
+							<div class="row-fluid" style="background-color:lavenderblush;">
 								<div class="span2">${loopmac.index + 1}</div>
 								<div class="span2">${mac.macAddress}</div>
 								<div class="span2">${mac.ipAddress}</div>
